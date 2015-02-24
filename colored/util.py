@@ -8,7 +8,7 @@ abbreviations = {
     "m": "magenta",
     "y": "yellow",
     "k": "black",
-    "w", "white"
+    "w": "white"
 }
 
 cnames = {
