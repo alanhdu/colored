@@ -13,7 +13,7 @@ def make_mapping_array(data, N=256, gamma=1.0):
     try:
         data = np.array(data, dtype=np.float)
     except:
-        raise TypeError("data must be convertable to an array")
+        raise TypeError("data must be convertable to an array, (got {})".format(data))
 
     x, y = data[:, 0], data[:, 1]
 
@@ -63,4 +63,4 @@ class LinearSegmentedColormap(Colormap):
 
         return np.array(color)
 
-# data = {key: LinearSegmentedColormap(value) for key, value in data.data.items()}
+data = {key: LinearSegmentedColormap(value) for key, value in data.data.items()}

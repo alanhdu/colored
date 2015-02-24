@@ -1,5 +1,17 @@
 import re
 
+import numpy as np
+
+abbreviation_colors = {
+    'b': (0.0, 0.0, 1.0),
+    'g': (0.0, 0.5, 0.0),
+    'r': (1.0, 0.0, 0.0),
+    'c': (0.0, 0.75, 0.75),
+    'm': (0.75, 0, 0.75),
+    'y': (0.75, 0.75, 0),
+    'k': (0.0, 0.0, 0.0),
+    'w': (1.0, 1.0, 1.0)
+}
 abbreviations = {
     "b": "blue",
     "g": "green",
@@ -188,18 +200,17 @@ def to_rgb(arg):
         * a string repr of a float, like '0.4' for grayscale on [0,1],
     """
     arg = arg.lower()
-    name = abbreviations.get(arg, arg)
-    hex_value = cnames.get(name, None)
-
     if hexColorPattern.match(arg) is not None:
         return hex2color(arg)
-    elif hex_value is None:
-        try:    # gray scale
+    elif arg in abbreviations:
+        return abbreviation_colors[arg]
+    elif arg in cnames:
+        return hex2color(cnames[arg])
+    else:   # gray scale
+        try:
             f = float(arg)
             if f < 0 or f > 1:
-                raise ValueError("gray must be in [0, 1] (got {}".format(arg))
+                raise ValueError("gray must be in [0, 1] (got {})".format(arg))
             return (f, f, f)
         except ValueError:
-            raise ValueError("Unknown argument type received (got {}".format(arg))
-    else:
-        return hex2color(hex_value)
+            raise ValueError("Unknown argument type received (got {})".format(arg))
