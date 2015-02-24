@@ -1,3 +1,5 @@
+from collections import Mapping, Sequence
+
 import numpy as np
 
 from colored import util
@@ -32,4 +34,30 @@ def make_mapping_array(data, N=256, gamma=1.0):
     return np.clip(lookup, 0, 1)
 
 class Colormap(object):
-    pass
+    def __call__(self, value, clip=False):
+        pass
+
+class LinearSegmentedColarmap(Colormap):
+    def __init__(self, colors, N=256, gamma=1.0):
+        self.N = N
+        if isinstance(colors, Sequence):
+            xs, cs = zip(*colors)
+            rs, gs, bs = zip(*cs)
+            colors = {"red": tuple(zip(xs, rs)),
+                      "green": tuple(zip(xs, gs)),
+                      "blue": tuple(zip(xs, bs))}
+
+        rs, gs, bs = colors["red"], colors["green"], colors["blue"]
+
+        self.reds = make_mapping_array(rs, N=N, gamma=gamma)
+        self.greens = make_mapping_array(gs, N=N, gamma=gamma)
+        self.blues = make_mapping_array(bs, N=N, gamma=gamma)
+
+    def __call__(self, value, clip=False):
+        value = np.round(np.array(value) * (self.N - 1)).astype(np.uint)
+        if np.isscalar(value):
+            color = self.reds[value], self.greens[value], self.blues[value]
+        else:
+            color = tuple(zip(self.reds[value], self.greens[value], self.blues[value]))
+
+        return np.array(color)
