@@ -3,6 +3,7 @@ from collections import Mapping, Sequence
 import numpy as np
 
 from colored import util
+from colored import data
 
 
 def make_mapping_array(data, N=256, gamma=1.0):
@@ -37,7 +38,7 @@ class Colormap(object):
     def __call__(self, value, clip=False):
         pass
 
-class LinearSegmentedColarmap(Colormap):
+class LinearSegmentedColormap(Colormap):
     def __init__(self, colors, N=256, gamma=1.0):
         self.N = N
         if isinstance(colors, Sequence):
@@ -61,3 +62,5 @@ class LinearSegmentedColarmap(Colormap):
             color = tuple(zip(self.reds[value], self.greens[value], self.blues[value]))
 
         return np.array(color)
+
+# data = {key: LinearSegmentedColormap(value) for key, value in data.data.items()}

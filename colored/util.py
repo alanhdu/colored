@@ -173,8 +173,6 @@ def hex2color(s):
     Take a hex string *s* and return the corresponding rgb 3-tuple
     Example: #efefef -> (0.93725, 0.93725, 0.93725)
     """
-    if not isinstance(s, six.string_types):
-        raise TypeError('hex2color requires a string argument')
     if hexColorPattern.match(s) is None:
         raise ValueError('invalid hex color string "%s"' % s)
     return tuple([int(n, 16) / 255.0 for n in (s[1:3], s[3:5], s[5:7])])
@@ -183,24 +181,19 @@ def to_rgb(arg):
     """
     Returns an *RGB* tuple of three floats from 0-1.
 
-    *arg* must be a string that is:
-
-        1) a letter from the set 'rgbcmykw'
-        2) a hex color string, like '#00FFFF'
-        3) a standard name, like 'aqua'
-        4) a string representation of a float, like '0.4',
-           indicating gray on a 0-1 scale
-
-    if *arg* is *RGBA*, the *A* will simply be discarded.
+    *arg* must be a string that is either a:
+        * a letter from the set 'rgbcmykw'
+        * a hex color string, like '#00FFFF'
+        * a standard name, like 'aqua'
+        * a string repr of a float, like '0.4' for grayscale on [0,1],
     """
-    # Gray must be a string to distinguish 3-4 grays from RGB or RGBA.
-
     arg = arg.lower()
-
     name = abbreviations.get(arg, arg)
     hex_value = cnames.get(name, None)
 
-    if hex_value is None:
+    if hexColorPattern.match(arg) is not None:
+        return hex2color(arg)
+    elif hex_value is None:
         try:    # gray scale
             f = float(arg)
             if f < 0 or f > 1:
@@ -209,4 +202,4 @@ def to_rgb(arg):
         except ValueError:
             raise ValueError("Unknown argument type received (got {}".format(arg))
     else:
-        return hex_value
+        return hex2color(hex_value)
