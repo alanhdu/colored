@@ -63,4 +63,4 @@ class LinearSegmentedColormap(Colormap):
 
         return np.array(color)
 
-data = {key: LinearSegmentedColormap(value) for key, value in data.data.items()}
+cmaps = {key: LinearSegmentedColormap(value) for key, value in data.data.items()}
