@@ -173,12 +173,14 @@ for k, v in list(cnames.items()):
     if k.find('gray') >= 0:
         cnames[k.replace("gray", "grey")] = v
 
+
 def rgb2hex(rgb):
     'Given an rgb or rgba sequence of 0-1 floats, return the hex string'
     a = '#%02x%02x%02x' % tuple([int(np.round(val * 255)) for val in rgb[:3]])
     return a
 
 hexColorPattern = re.compile("\A#[a-fA-F0-9]{6}\Z")
+
 
 def hex2color(s):
     """
@@ -188,6 +190,7 @@ def hex2color(s):
     if hexColorPattern.match(s) is None:
         raise ValueError('invalid hex color string "%s"' % s)
     return tuple([int(n, 16) / 255.0 for n in (s[1:3], s[3:5], s[5:7])])
+
 
 def to_rgb(arg):
     """
@@ -210,7 +213,8 @@ def to_rgb(arg):
         try:
             f = float(arg)
             if f < 0 or f > 1:
-                raise ValueError("gray must be in [0, 1] (got {})".format(arg))
+                msg = "gray must be in [0, 1] (got {})".format(arg)
+                raise ValueError(msg)
             return (f, f, f)
         except ValueError:
-            raise ValueError("Unknown argument type received (got {})".format(arg))
+            raise ValueError("Unknown argument type (got {})".format(arg))

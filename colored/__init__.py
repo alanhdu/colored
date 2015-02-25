@@ -1,4 +1,4 @@
-from collections import Mapping, Sequence
+from collections import Sequence
 
 import numpy as np
 
@@ -13,7 +13,8 @@ def make_mapping_array(data, N=256, gamma=1.0):
     try:
         data = np.array(data, dtype=np.float)
     except:
-        raise TypeError("data must be convertable to an array, (got {})".format(data))
+        msg = "data must be convertable to an array (got {})".format(data)
+        raise TypeError(msg)
 
     x, y = data[:, 0], data[:, 1]
 
@@ -34,9 +35,11 @@ def make_mapping_array(data, N=256, gamma=1.0):
 
     return np.clip(lookup, 0, 1)
 
+
 class Colormap(object):
     def __call__(self, value, clip=False):
         pass
+
 
 class LinearSegmentedColormap(Colormap):
     def __init__(self, colors, N=256, gamma=1.0):
@@ -59,12 +62,14 @@ class LinearSegmentedColormap(Colormap):
         if np.isscalar(value):
             color = self.reds[value], self.greens[value], self.blues[value]
         else:
-            color = tuple(zip(self.reds[value], self.greens[value], self.blues[value]))
+            color = zip(self.reds[value], self.greens[value], self.blues[value])
+            color = tuple(color)
 
         return np.array(color)
 
-cmaps = {key: LinearSegmentedColormap(value) 
+cmaps = {key: LinearSegmentedColormap(value)
          for key, value in data.data.items()}
+
 
 # can't be replaced by lambda -- doesn't work well w/ closures
 def reverser(f):
@@ -72,5 +77,5 @@ def reverser(f):
         return f(1 - x)
     return func
 
-cmaps.update({key + "_r": reverser(value) 
+cmaps.update({key + "_r": reverser(value)
               for key, value in cmaps.items()})
