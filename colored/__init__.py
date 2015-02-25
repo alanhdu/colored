@@ -63,4 +63,14 @@ class LinearSegmentedColormap(Colormap):
 
         return np.array(color)
 
-cmaps = {key: LinearSegmentedColormap(value) for key, value in data.data.items()}
+cmaps = {key: LinearSegmentedColormap(value) 
+         for key, value in data.data.items()}
+
+# can't be replaced by lambda -- doesn't work well w/ closures
+def reverser(f):
+    def func(x):
+        return f(1 - x)
+    return func
+
+cmaps.update({key + "_r": reverser(value) 
+              for key, value in cmaps.items()})
