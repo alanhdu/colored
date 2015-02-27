@@ -15,3 +15,6 @@ array([ 1.        ,  0.69568627,  0.        ])
 
 ## Dependencies
 Only `numpy`.
+
+## Testing
+Install `pytest` and `matplotlib`, and run `python test_all.py`
