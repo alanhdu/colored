@@ -12,16 +12,6 @@ abbreviation_colors = {
     'k': (0.0, 0.0, 0.0),
     'w': (1.0, 1.0, 1.0)
 }
-abbreviations = {
-    "b": "blue",
-    "g": "green",
-    "r": "red",
-    "c": "cyan",
-    "m": "magenta",
-    "y": "yellow",
-    "k": "black",
-    "w": "white"
-}
 
 cnames = {
     'aliceblue':            '#F0F8FF',
@@ -170,7 +160,7 @@ cnames = {
 
 # add british equivs
 for k, v in list(cnames.items()):
-    if k.find('gray') >= 0:
+    if "gray" in k:
         cnames[k.replace("gray", "grey")] = v
 
 
@@ -205,7 +195,7 @@ def to_rgb(arg):
     arg = arg.lower()
     if hexColorPattern.match(arg) is not None:
         return hex2color(arg)
-    elif arg in abbreviations:
+    elif arg in abbreviation_colors:
         return abbreviation_colors[arg]
     elif arg in cnames:
         return hex2color(cnames[arg])

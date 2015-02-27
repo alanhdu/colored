@@ -7,6 +7,21 @@ from colored import data
 
 
 def make_mapping_array(data, N=256, gamma=1.0):
+    """ Create an *N*-element 1D array for a lookup table
+
+    *data* should be a list of (x, y) correspondences. The list must
+    start with x=0 and end w/ x=1. make_mapping_array will linearly 
+    interpolate between the (x, y) correspondences to create the 
+    lookup-table.
+
+    For example, if we wanted y to increase from 0 to 1 when x increases
+    from 0 to 0.5, and then to drop back to 0 when x goes to 1, we'd pass
+    in:
+        [(0, 0), (0.5, 1), (1, 0)]
+
+    Alternatively, *data* can be a function mapping [0, 1] to [0, 1]
+    """
+
     if callable(data):
         x = np.linspace(0, 1, N) ** gamma
         return np.clip(data(x), 0, 1).astype(np.float)
@@ -37,12 +52,21 @@ def make_mapping_array(data, N=256, gamma=1.0):
 
 
 class Colormap(object):
+    """ Map floats in [0, 1] to rgb tuples.
+    """
     def __call__(self, value, clip=False):
         pass
 
 
-class LinearSegmentedColormap(Colormap):
+class LinearColormap(Colormap):
+    """ Colormap that uses linearly interpolates"""
     def __init__(self, colors, N=256, gamma=1.0):
+        """Create color map from *colors*
+
+        colors should either be a list of (x, (r, g, b)) tuples,
+        or a dictionary of that maps ["red", "green", and "blue"]
+        onto a format accepted by make_mapping_array
+        """
         self.N = N
         if isinstance(colors, Sequence):
             xs, cs = zip(*colors)
@@ -67,7 +91,7 @@ class LinearSegmentedColormap(Colormap):
 
         return np.array(color)
 
-cmaps = {key: LinearSegmentedColormap(value)
+cmaps = {key: LinearColormap(value)
          for key, value in data.data.items()}
 
 
